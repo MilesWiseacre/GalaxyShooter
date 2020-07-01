@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour {
 
     public bool gameOver = true;
     public GameObject player;
+    public GameObject asteroid;
 
     private UIManager _uiManager;
     private GameObject _spawner;
@@ -23,8 +24,14 @@ public class GameManager : MonoBehaviour {
             {
                 gameOver = false;
                 Instantiate(player, new Vector3(-4, 0, 0), Quaternion.identity);
+                Instantiate(asteroid, new Vector3(0, 0, 0), Quaternion.identity);
                 _uiManager.HideTitle();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
 

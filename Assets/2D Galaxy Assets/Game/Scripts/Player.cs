@@ -13,30 +13,31 @@ public class Player : MonoBehaviour {
 
     private float _canFire = 0.0f;
     [SerializeField]
-    private GameObject _Pla_Laser;
+    private GameObject _Pla_Laser = null;
     [SerializeField]
-    private GameObject _Pla_3Laser;
+    private GameObject _Pla_3Laser = null;
 
     public bool TripleShot = false;
     public float coolDown = 0.0f;
     public int plaHealth = 3;
     [SerializeField]
-    private GameObject _explosion;
+    private GameObject _explosion = null;
     public bool shield = false;
     [SerializeField]
-    private GameObject _shieldObject;
+    private GameObject _shieldObject = null;
     [SerializeField]
-    private UIManager _uiManager;
-    private GameManager _gameManager;
-    private SpawnManager _spawnManager;
-    private AudioSource _audioSource;
+    private UIManager _uiManager = null;
+    private GameManager _gameManager = null;
+    private SpawnManager _spawnManager = null;
+    private AudioSource _audioSource = null;
     [SerializeField]
-    private GameObject[] _bleeding;
+    private GameObject[] _bleeding = null;
 
     private int _hit = 0;
 
     // Use this for initialization
     void Start () {
+        _canFire = Time.time + _fireRate;
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
@@ -45,17 +46,17 @@ public class Player : MonoBehaviour {
         {
             _uiManager.UpdateLives(plaHealth);
         }
-        if (_spawnManager != null)
-        {
-            _spawnManager.StartRoutines();
-        }
+        //if (_spawnManager != null)
+        //{
+        //    _spawnManager.StartRoutines();
+        //}
     }
 
 	// Update is called once per frame
 	void Update () {
         Movement();
         CoolDown();
-        if (Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0))
+        if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && Time.time > _canFire)
         {
             Shoot();
         }
@@ -113,18 +114,15 @@ public class Player : MonoBehaviour {
 
     private void Shoot()
     {
-        if (Time.time > _canFire)
+        _canFire = Time.time + _fireRate;
+        _audioSource.Play();
+        if (TripleShot == true)
         {
-            _audioSource.Play();
-            if (TripleShot == true)
-            {
-                Instantiate(_Pla_3Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
-            }
-            else
-            {
-                Instantiate(_Pla_Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
-            }
-            _canFire = Time.time + _fireRate;
+            Instantiate(_Pla_3Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+        }
+        else
+        {
+            Instantiate(_Pla_Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
         }
     }
 
@@ -132,25 +130,20 @@ public class Player : MonoBehaviour {
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-        transform.Translate(Vector3.right * _speed * speedMult * horizontalInput * Time.deltaTime);
-        transform.Translate(Vector3.up * _speed * speedMult * verticalInput * Time.deltaTime);
+        Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
+        transform.Translate(direction * _speed * Time.deltaTime);
 
-        if (transform.position.x >= 0.0f)
-        {
-            transform.position = new Vector3(0, transform.position.y, 0);
-        }
-        else if (transform.position.x <= -8.5f)
-        {
-            transform.position = new Vector3(-8.5f, transform.position.y, 0);
-        }
+        transform.position = new Vector3(Mathf.Clamp(transform.position.x, -8f, 0f), transform.position.y, 0);
 
         if (transform.position.y >= 4.8f)
         {
-            transform.position = new Vector3(transform.position.x, 4.8f, 0);
+            //transform.position = new Vector3(transform.position.x, 4.8f, 0);
+            transform.position = new Vector3(transform.position.x, -4.8f, 0);
         }
         else if (transform.position.y <= -4.8f)
         {
-            transform.position = new Vector3(transform.position.x, -4.8f, 0);
+            //transform.position = new Vector3(transform.position.x, -4.8f, 0);
+            transform.position = new Vector3(transform.position.x, 4.8f, 0);
         }
     }
 }

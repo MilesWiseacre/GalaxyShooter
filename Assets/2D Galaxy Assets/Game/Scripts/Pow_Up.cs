@@ -7,15 +7,15 @@ public class Pow_Up : MonoBehaviour
     [SerializeField]
     private float _speed = 3.0f;
     [SerializeField]
-    private int _powID;
+    private int _powID = 0;
 
-    private SpriteRenderer _sprRender;
+    private SpriteRenderer _sprRender = null;
     [SerializeField]
-    private Sprite[] _sprPow;
+    private Sprite[] _sprPow = null;
     [SerializeField]
-    private AudioClip _clip;
+    private AudioClip _clip = null;
 
-    private Animator _anim;
+    private Animator _anim = null;
 
     // Use this for initialization
     void Start()
@@ -43,17 +43,23 @@ public class Pow_Up : MonoBehaviour
         if (other.tag == "Player")
         {
             Player player = other.GetComponent<Player>();
-            if (_powID == 0)
+            switch (_powID)
             {
-                player.TripleShot = true;
-            }
-            else if (_powID == 1)
-            {
-                player.speedMult = 1.5f;
-            }
-            else if (_powID == 2)
-            {
-                player.Shield();
+                case 0:
+                    player.TripleShot = true;
+                    break;
+
+                case 1:
+                    player.speedMult = 1.5f;
+                    break;
+
+                case 2:
+                    player.Shield();
+                    break;
+
+                default:
+                    Debug.Log("Default Value");
+                    break;
             }
             AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, .2f);
             player.coolDown = Time.time + 5.0f;
