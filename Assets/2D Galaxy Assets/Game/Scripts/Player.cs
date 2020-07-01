@@ -6,6 +6,7 @@ public class Player : MonoBehaviour {
     [SerializeField]
     private float _speed = 5.0f;
     public float speedMult = 1f;
+    private float _thrust = 0f;
     //[SerializeField]
     //private float _spread = 0f;
     [SerializeField]
@@ -56,6 +57,7 @@ public class Player : MonoBehaviour {
 	void Update () {
         Movement();
         CoolDown();
+        Thrust();
         if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && Time.time > _canFire)
         {
             Shoot();
@@ -131,7 +133,7 @@ public class Player : MonoBehaviour {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
-        transform.Translate(direction * _speed * Time.deltaTime);
+        transform.Translate(direction * ((_speed * speedMult) + _thrust) * Time.deltaTime);
 
         transform.position = new Vector3(Mathf.Clamp(transform.position.x, -8f, 0f), transform.position.y, 0);
 
@@ -144,6 +146,18 @@ public class Player : MonoBehaviour {
         {
             //transform.position = new Vector3(transform.position.x, -4.8f, 0);
             transform.position = new Vector3(transform.position.x, 4.8f, 0);
+        }
+    }
+
+    private void Thrust()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            _thrust = 2f;
+        }
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            _thrust = 0f;
         }
     }
 }
