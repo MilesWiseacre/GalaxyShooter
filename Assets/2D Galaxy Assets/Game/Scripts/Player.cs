@@ -137,6 +137,12 @@ public class Player : MonoBehaviour {
         plaHealth++;
     }
 
+    public void Reload()
+    {
+        _ammo = _maxAmmo;
+        _uiManager.UpdateAmmo(_ammo);
+    }
+
     private void CoolDown()
     {
         if (Time.time > coolDown)
