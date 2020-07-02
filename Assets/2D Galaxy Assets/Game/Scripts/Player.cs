@@ -41,32 +41,37 @@ public class Player : MonoBehaviour {
 
     SpriteRenderer _shieldSprite = null;
 
-    // Use this for initialization
+    private int _maxAmmo = 15;
+    private int _ammo = 0;
+
+    private ParticleSystem _ps;
+
     void Start () {
+        _ammo = _maxAmmo;
         _canFire = Time.time + _fireRate;
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _audioSource = GetComponent<AudioSource>();
         _shieldSprite = _shieldObject.GetComponent<SpriteRenderer>();
+        _ps = GetComponent<ParticleSystem>();
         if (_uiManager != null)
         {
             _uiManager.UpdateLives(plaHealth);
+            _uiManager.UpdateAmmo(_ammo);
         }
-        //if (_spawnManager != null)
-        //{
-        //    _spawnManager.StartRoutines();
-        //}
     }
 
-	// Update is called once per frame
 	void Update () {
         Movement();
         CoolDown();
         Thrust();
-        if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && Time.time > _canFire)
+        if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && Time.time > _canFire && _ammo >= 1)
         {
             Shoot();
+        } else if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && Time.time > _canFire && _ammo < 1)
+        {
+            Misfire();
         }
     }
 
@@ -93,6 +98,7 @@ public class Player : MonoBehaviour {
             {
                 case 3:
                     _shieldSprite.color = Color.green;
+                    break;
                 case 2:
                     _shieldSprite.color = Color.yellow;
                     break;
@@ -144,6 +150,8 @@ public class Player : MonoBehaviour {
     {
         _canFire = Time.time + _fireRate;
         _audioSource.Play();
+        _ammo--;
+        _uiManager.UpdateAmmo(_ammo);
         if (TripleShot == true)
         {
             Instantiate(_Pla_3Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
@@ -152,6 +160,14 @@ public class Player : MonoBehaviour {
         {
             Instantiate(_Pla_Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
         }
+    }
+
+    private void Misfire()
+    {
+        _canFire = Time.time + _fireRate;
+        ParticleSystem.EmitParams emitOverride = new ParticleSystem.EmitParams();
+        emitOverride.startLifetime = .1f;
+        _ps.Emit(emitOverride, 20);
     }
 
     private void Movement()

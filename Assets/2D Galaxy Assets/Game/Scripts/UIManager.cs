@@ -12,10 +12,17 @@ public class UIManager : MonoBehaviour {
     public Text scoreText;
     public int score;
 
+    public Text ammoText;
+
     public void UpdateLives(int hasLives)
     { 
         Debug.Log("Player lives: " + hasLives);
         LivesSpr.sprite = LivesImg[hasLives];
+    }
+
+    public void UpdateAmmo(int hasAmmo)
+    {
+        ammoText.text = "" + hasAmmo;
     }
 
     public void UpdateScore()
