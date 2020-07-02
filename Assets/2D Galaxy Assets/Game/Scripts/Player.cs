@@ -134,7 +134,20 @@ public class Player : MonoBehaviour {
 
     public void Heal()
     {
-        plaHealth++;
+        if (plaHealth != 3)
+        {
+            plaHealth++;
+            _uiManager.UpdateLives(plaHealth);
+            _hit--;
+            if (plaHealth == 2)
+            {
+                _bleeding[1].SetActive(false);
+            }
+            else if (plaHealth == 3)
+            {
+                _bleeding[0].SetActive(false);
+            }
+        }
     }
 
     public void Reload()

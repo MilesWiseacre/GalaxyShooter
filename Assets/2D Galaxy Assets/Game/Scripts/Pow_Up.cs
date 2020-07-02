@@ -22,7 +22,7 @@ public class Pow_Up : MonoBehaviour
     {
         _anim = GetComponent<Animator>();
         _sprRender = GetComponent<SpriteRenderer>();
-        _powID = Random.Range(0, 4);
+        _powID = Random.Range(0, 5);
         _sprRender.sprite = _sprPow[_powID];
         _anim.SetInteger("Pow_ID", _powID);
         
@@ -59,6 +59,10 @@ public class Pow_Up : MonoBehaviour
 
                 case 3:
                     player.Reload();
+                    break;
+
+                case 4:
+                    player.Heal();
                     break;
 
                 default:
