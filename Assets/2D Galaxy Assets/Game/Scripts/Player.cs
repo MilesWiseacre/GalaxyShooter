@@ -45,6 +45,13 @@ public class Player : MonoBehaviour {
     private int _ammo = 0;
 
     private ParticleSystem _ps;
+    [SerializeField]
+    private Camera _main = null;
+
+    private bool _seek = false;
+
+    [SerializeField]
+    private GameObject seekLaser = null;
 
     void Start () {
         _ammo = _maxAmmo;
@@ -55,6 +62,7 @@ public class Player : MonoBehaviour {
         _audioSource = GetComponent<AudioSource>();
         _shieldSprite = _shieldObject.GetComponent<SpriteRenderer>();
         _ps = GetComponent<ParticleSystem>();
+        _main = GameObject.Find("Main Camera").GetComponent<Camera>();
         if (_uiManager != null)
         {
             _uiManager.UpdateLives(plaHealth);
@@ -124,6 +132,11 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void Seek()
+    {
+        _seek = true;
+    }
+
     public void Shield()
     {
         _shieldSprite.color = Color.white;
@@ -156,12 +169,18 @@ public class Player : MonoBehaviour {
         _uiManager.UpdateAmmo(_ammo);
     }
 
+    public void SetCoolDown(float time)
+    {
+        coolDown = Time.time + time;
+    }
+
     private void CoolDown()
     {
         if (Time.time > coolDown)
         {
             TripleShot = false;
             speedMult = 1;
+            _seek = false;
         }
     }
 
@@ -171,13 +190,19 @@ public class Player : MonoBehaviour {
         _audioSource.Play();
         _ammo--;
         _uiManager.UpdateAmmo(_ammo);
-        if (TripleShot == true)
+        if (_seek == true)
         {
-            Instantiate(_Pla_3Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
-        }
-        else
+            Instantiate(seekLaser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+        } else
         {
-            Instantiate(_Pla_Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+            if (TripleShot == true)
+            {
+                Instantiate(_Pla_3Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(_Pla_Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+            }
         }
     }
 

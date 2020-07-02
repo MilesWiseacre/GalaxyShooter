@@ -22,7 +22,11 @@ public class Pow_Up : MonoBehaviour
     {
         _anim = GetComponent<Animator>();
         _sprRender = GetComponent<SpriteRenderer>();
-        _powID = Random.Range(0, 5);
+        _powID = Random.Range(0, 10);
+        if (_powID >= 4)
+        {
+            _powID = _powID - 4;
+        }
         _sprRender.sprite = _sprPow[_powID];
         _anim.SetInteger("Pow_ID", _powID);
         
@@ -47,10 +51,12 @@ public class Pow_Up : MonoBehaviour
             {
                 case 0:
                     player.TripleShot = true;
+                    player.SetCoolDown(5);
                     break;
 
                 case 1:
                     player.speedMult = 1.5f;
+                    player.SetCoolDown(5);
                     break;
 
                 case 2:
@@ -63,6 +69,11 @@ public class Pow_Up : MonoBehaviour
 
                 case 4:
                     player.Heal();
+                    break;
+
+                case 5:
+                    player.Seek();
+                    player.SetCoolDown(5);
                     break;
 
                 default:

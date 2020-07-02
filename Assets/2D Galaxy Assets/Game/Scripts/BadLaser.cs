@@ -12,7 +12,7 @@ public class BadLaser : MonoBehaviour
     void Update()
     {
         transform.Translate(Vector3.left * _speed * Time.deltaTime);
-        if (transform.position.x >= 10f)
+        if (transform.position.x <= -10f)
         {
             Destroy(gameObject);
         }
