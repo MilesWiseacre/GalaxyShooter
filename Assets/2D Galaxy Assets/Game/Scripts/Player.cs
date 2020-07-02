@@ -36,6 +36,11 @@ public class Player : MonoBehaviour {
 
     private int _hit = 0;
 
+    private int _maxShieldHealth = 4;
+    private int _shieldHealth = 0;
+
+    SpriteRenderer _shieldSprite = null;
+
     // Use this for initialization
     void Start () {
         _canFire = Time.time + _fireRate;
@@ -43,6 +48,7 @@ public class Player : MonoBehaviour {
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _audioSource = GetComponent<AudioSource>();
+        _shieldSprite = _shieldObject.GetComponent<SpriteRenderer>();
         if (_uiManager != null)
         {
             _uiManager.UpdateLives(plaHealth);
@@ -82,8 +88,26 @@ public class Player : MonoBehaviour {
         }
         else
         {
-            shield = false;
-            _shieldObject.SetActive(false);
+            _shieldHealth--;
+            switch (_shieldHealth)
+            {
+                case 3:
+                    _shieldSprite.color = Color.green;
+                case 2:
+                    _shieldSprite.color = Color.yellow;
+                    break;
+                case 1:
+                    _shieldSprite.color = Color.red;
+                    break;
+                default:
+                    _shieldSprite.color = Color.white;
+                    break;
+            }
+            if (_shieldHealth == 0)
+            {
+                shield = false;
+                _shieldObject.SetActive(false);
+            }
         }
         if (plaHealth < 1)
         {
@@ -96,7 +120,9 @@ public class Player : MonoBehaviour {
 
     public void Shield()
     {
+        _shieldSprite.color = Color.white;
         shield = true;
+        _shieldHealth = _maxShieldHealth;
         _shieldObject.SetActive(true);
     }
 
