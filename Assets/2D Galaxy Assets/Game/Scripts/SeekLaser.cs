@@ -23,7 +23,7 @@ public class SeekLaser : MonoBehaviour
         _targets = GameObject.FindGameObjectsWithTag("Enemy");
         if (_targets == null)
         {
-            transform.Translate(Vector3.right * _speed * Time.deltaTime);
+            return;
         }
         foreach (GameObject targ in _targets)
         {
@@ -40,6 +40,7 @@ public class SeekLaser : MonoBehaviour
     {
         if (_target == null)
         {
+            transform.Translate(Vector3.right * _speed * Time.deltaTime);
             Target();
         } else
         {

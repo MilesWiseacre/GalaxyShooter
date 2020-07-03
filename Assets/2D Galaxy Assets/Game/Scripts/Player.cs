@@ -45,8 +45,6 @@ public class Player : MonoBehaviour {
     private int _ammo = 0;
 
     private ParticleSystem _ps;
-    [SerializeField]
-    private Camera _main = null;
 
     private bool _seek = false;
 
@@ -62,11 +60,11 @@ public class Player : MonoBehaviour {
         _audioSource = GetComponent<AudioSource>();
         _shieldSprite = _shieldObject.GetComponent<SpriteRenderer>();
         _ps = GetComponent<ParticleSystem>();
-        _main = GameObject.Find("Main Camera").GetComponent<Camera>();
         if (_uiManager != null)
         {
             _uiManager.UpdateLives(plaHealth);
             _uiManager.UpdateAmmo(_ammo);
+            _uiManager.UpdateThrusters("Disengaged");
         }
     }
 
@@ -172,6 +170,7 @@ public class Player : MonoBehaviour {
     public void SetCoolDown(float time)
     {
         coolDown = Time.time + time;
+        _uiManager.SetBar(time);
     }
 
     private void CoolDown()
@@ -239,10 +238,12 @@ public class Player : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
+            _uiManager.UpdateThrusters("Engaged");
             _thrust = 2f;
         }
         if (Input.GetKeyUp(KeyCode.LeftShift))
         {
+            _uiManager.UpdateThrusters("Disengaged");
             _thrust = 0f;
         }
     }

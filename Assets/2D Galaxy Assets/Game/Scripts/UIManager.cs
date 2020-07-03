@@ -14,6 +14,29 @@ public class UIManager : MonoBehaviour {
 
     public Text ammoText;
 
+    public Text thrustText;
+
+    public Slider powBar;
+
+    float _barValue;
+
+    float _barTime;
+
+    void Update()
+    {
+        if (powBar.value > 0)
+        {
+            _barValue = _barTime - Time.time;
+            powBar.value = _barValue;
+        }
+    }
+
+    public void SetBar(float time)
+    {
+        powBar.value = time;
+        _barTime = time + Time.time;
+    }
+
     public void UpdateLives(int hasLives)
     { 
         Debug.Log("Player lives: " + hasLives);
@@ -23,6 +46,11 @@ public class UIManager : MonoBehaviour {
     public void UpdateAmmo(int hasAmmo)
     {
         ammoText.text = "" + hasAmmo;
+    }
+
+    public void UpdateThrusters(string display)
+    {
+        thrustText.text = "" + display;
     }
 
     public void UpdateScore()
