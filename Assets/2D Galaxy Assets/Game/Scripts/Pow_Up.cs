@@ -23,9 +23,9 @@ public class Pow_Up : MonoBehaviour
         _anim = GetComponent<Animator>();
         _sprRender = GetComponent<SpriteRenderer>();
         _powID = Random.Range(0, 10);
-        if (_powID >= 4)
+        if (_powID >= 5)
         {
-            _powID = _powID - 4;
+            _powID = _powID - 5;
         }
         _sprRender.sprite = _sprPow[_powID];
         _anim.SetInteger("Pow_ID", _powID);

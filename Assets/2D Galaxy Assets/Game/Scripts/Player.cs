@@ -51,6 +51,8 @@ public class Player : MonoBehaviour {
     [SerializeField]
     private GameObject seekLaser = null;
 
+    CameraShake _camShake;
+
     void Start () {
         _ammo = _maxAmmo;
         _canFire = Time.time + _fireRate;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour {
         _audioSource = GetComponent<AudioSource>();
         _shieldSprite = _shieldObject.GetComponent<SpriteRenderer>();
         _ps = GetComponent<ParticleSystem>();
+        _camShake = Camera.main.GetComponent<CameraShake>();
         if (_uiManager != null)
         {
             _uiManager.UpdateLives(plaHealth);
@@ -83,6 +86,7 @@ public class Player : MonoBehaviour {
 
     public void Damage()
     {
+        StartCoroutine(_camShake.Shake(.25f, .3f));
         if (shield == false)
         {
             plaHealth--;
