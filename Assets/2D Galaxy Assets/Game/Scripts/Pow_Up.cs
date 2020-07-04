@@ -23,12 +23,13 @@ public class Pow_Up : MonoBehaviour
         _anim = GetComponent<Animator>();
         _sprRender = GetComponent<SpriteRenderer>();
         _powID = Random.Range(0, 10);
-        if (_powID >= 5)
+        int idAdjust = _powID;
+        if (idAdjust >= 5)
         {
-            _powID = _powID - 5;
+            idAdjust = idAdjust - 5;
         }
-        _sprRender.sprite = _sprPow[_powID];
-        _anim.SetInteger("Pow_ID", _powID);
+        _sprRender.sprite = _sprPow[idAdjust];
+        _anim.SetInteger("Pow_ID", idAdjust);
         
     }
 
@@ -50,28 +51,33 @@ public class Pow_Up : MonoBehaviour
             switch (_powID)
             {
                 case 0:
+                case 5:
                     player.TripleShot = true;
                     player.SetCoolDown(5);
                     break;
 
                 case 1:
+                case 6:
                     player.speedMult = 1.5f;
                     player.SetCoolDown(5);
                     break;
 
                 case 2:
+                case 7:
                     player.Shield();
                     break;
 
                 case 3:
+                case 8:
                     player.Reload();
                     break;
 
                 case 4:
+                case 9:
                     player.Heal();
                     break;
 
-                case 5:
+                case 10:
                     player.Seek();
                     player.SetCoolDown(5);
                     break;

@@ -193,7 +193,7 @@ public class Player : MonoBehaviour {
         _audioSource.Play();
         _ammo--;
         _uiManager.UpdateAmmo(_ammo, _maxAmmo);
-        if (_seek == true)
+        if (_seek)
         {
             Instantiate(seekLaser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
         } else

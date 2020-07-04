@@ -19,12 +19,16 @@ public class EnemyAI : MonoBehaviour {
 
     [SerializeField]
     GameObject _laser = null;
+
+    bool _strafing = false;
+
+    bool _reverse = false;
     
     void Start() {
-        _fireRate = Random.Range(.5f, 3.0f);
-        _cooldown = Time.time + _fireRate;
+        Reload();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+        StartCoroutine(Toggle());
     }
 
     void Update() {
@@ -32,9 +36,54 @@ public class EnemyAI : MonoBehaviour {
         Shoot();
     }
 
+    IEnumerator Toggle()
+    {
+        yield return new WaitForSeconds(3f);
+        float decision = Random.Range(0, 5);
+        switch (decision)
+        {
+            case 0:
+            case 1:
+                _strafing = false;
+                break;
+            case 2:
+            case 3:
+                _strafing = true;
+                break;
+            case 5:
+                _reverse = !_reverse;
+                break;
+            default:
+                break;
+        }
+    }
+
     private void Movement()
     {
-        transform.Translate(Vector3.left * _speed * Time.deltaTime);
+        // Switches reverse bool when out of bounds.
+        if (transform.position.y > 4.5f)
+        {
+            transform.position = new Vector3(transform.position.x, 4.5f, 0);
+            _reverse = !_reverse;
+        }
+        else if (transform.position.y < -4.5f)
+        {
+            transform.position = new Vector3(transform.position.x, -4.5f, 0);
+            _reverse = !_reverse;
+        }
+        // Strafing movement determined by a pair of bools.
+        float strafedir = 0;
+        if (_strafing && !_reverse)
+        {
+            strafedir = .5f;
+        } else if (_strafing && _reverse)
+        {
+            strafedir = -.5f;
+        }
+        // Move the enemy along.
+        Vector3 moveDir = new Vector3(-1, strafedir, 0);
+        transform.Translate(moveDir * _speed * Time.deltaTime);
+        // Wraps around, unless the game is over.
         if (transform.position.x <= -10 && !_gameManager.gameOver)
         {
             transform.position = new Vector3(10, Random.Range(-4.5f, 4.5f), 0);
@@ -48,10 +97,15 @@ public class EnemyAI : MonoBehaviour {
     {
         if (Time.time > _cooldown)
         {
-            _fireRate = Random.Range(.5f, 3.0f);
-            _cooldown = Time.time + _fireRate;
+            Reload();
             Instantiate(_laser, transform.position + new Vector3(-1, 0, 0), Quaternion.identity);
         }
+    }
+
+    private void Reload()
+    {
+        _fireRate = Random.Range(.5f, 3.0f);
+        _cooldown = Time.time + _fireRate;
     }
 
     public void Damage()
