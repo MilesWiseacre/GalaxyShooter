@@ -53,6 +53,10 @@ public class Player : MonoBehaviour {
 
     CameraShake _camShake;
 
+    bool _powDown = false;
+
+    int _reserveAmmo = 0;
+
     void Start () {
         _ammo = _maxAmmo;
         _canFire = Time.time + _fireRate;
@@ -74,7 +78,10 @@ public class Player : MonoBehaviour {
 	void Update () {
         Movement();
         CoolDown();
-        Thrust();
+        if (!_powDown)
+        {
+            Thrust();
+        }
         if ((Input.GetKey(KeyCode.Space) || Input.GetMouseButton(0)) && Time.time > _canFire && _ammo >= 1)
         {
             Shoot();
@@ -134,6 +141,18 @@ public class Player : MonoBehaviour {
         }
     }
 
+    public void PowDown()
+    {
+        SetCoolDown(7);
+        _powDown = true;
+        speedMult = .5f;
+        TripleShot = false;
+        _reserveAmmo = _ammo;
+        _ammo = 0;
+        _thrust = 0f;
+        _uiManager.UpdatePowDown();
+    }
+
     public void Seek()
     {
         _seek = true;
@@ -181,6 +200,13 @@ public class Player : MonoBehaviour {
     {
         if (Time.time > coolDown)
         {
+            if (_powDown)
+            {
+                _powDown = false;
+                _ammo = _reserveAmmo;
+                _uiManager.UpdateAmmo(_ammo, _maxAmmo);
+                _uiManager.UpdateThrusters("Disengaged");
+            }
             TripleShot = false;
             speedMult = 1;
             _seek = false;

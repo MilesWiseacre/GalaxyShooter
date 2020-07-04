@@ -22,6 +22,14 @@ public class UIManager : MonoBehaviour {
 
     float _barTime;
 
+    [SerializeField]
+    SpawnManager _spawnManager = null;
+
+    void Start()
+    {
+        _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+    }
+
     void Update()
     {
         if (powBar.value > 0)
@@ -48,6 +56,12 @@ public class UIManager : MonoBehaviour {
         ammoText.text = "" + hasAmmo + "/" + maxAmmo;
     }
 
+    public void UpdatePowDown()
+    {
+        ammoText.text = "Qa/02";
+        UpdateThrusters("Disabled");
+    }
+
     public void UpdateThrusters(string display)
     {
         thrustText.text = "" + display;
@@ -69,6 +83,7 @@ public class UIManager : MonoBehaviour {
     public void ShowTitle()
     {
         titleScreen.SetActive(true);
+        _spawnManager.StopRoutines();
     }
 
 }
