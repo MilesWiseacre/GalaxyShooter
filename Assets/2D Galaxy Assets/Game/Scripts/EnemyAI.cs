@@ -28,6 +28,21 @@ public class EnemyAI : MonoBehaviour {
         Reload();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
+        float decision = Random.Range(0, 2);
+        switch (decision)
+        {
+            case 0:
+                break;
+            case 1:
+                _strafing = true;
+                break;
+            case 2:
+                _strafing = true;
+                _reverse = !_reverse;
+                break;
+            default:
+                break;
+        }
         StartCoroutine(Toggle());
     }
 
