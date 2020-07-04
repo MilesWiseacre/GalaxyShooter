@@ -66,7 +66,7 @@ public class Player : MonoBehaviour {
         if (_uiManager != null)
         {
             _uiManager.UpdateLives(plaHealth);
-            _uiManager.UpdateAmmo(_ammo);
+            _uiManager.UpdateAmmo(_ammo, _maxAmmo);
             _uiManager.UpdateThrusters("Disengaged");
         }
     }
@@ -168,7 +168,7 @@ public class Player : MonoBehaviour {
     public void Reload()
     {
         _ammo = _maxAmmo;
-        _uiManager.UpdateAmmo(_ammo);
+        _uiManager.UpdateAmmo(_ammo, _maxAmmo);
     }
 
     public void SetCoolDown(float time)
@@ -192,7 +192,7 @@ public class Player : MonoBehaviour {
         _canFire = Time.time + _fireRate;
         _audioSource.Play();
         _ammo--;
-        _uiManager.UpdateAmmo(_ammo);
+        _uiManager.UpdateAmmo(_ammo, _maxAmmo);
         if (_seek == true)
         {
             Instantiate(seekLaser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);

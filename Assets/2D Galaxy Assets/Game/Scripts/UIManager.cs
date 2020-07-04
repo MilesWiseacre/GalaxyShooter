@@ -43,9 +43,9 @@ public class UIManager : MonoBehaviour {
         LivesSpr.sprite = LivesImg[hasLives];
     }
 
-    public void UpdateAmmo(int hasAmmo)
+    public void UpdateAmmo(int hasAmmo, int maxAmmo)
     {
-        ammoText.text = "" + hasAmmo;
+        ammoText.text = "" + hasAmmo + "/" + maxAmmo;
     }
 
     public void UpdateThrusters(string display)
