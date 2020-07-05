@@ -49,6 +49,13 @@ public class SpawnManager : MonoBehaviour {
         GameObject newEnemy = Instantiate(Enemy[0], toSpawn, Quaternion.identity);
         newEnemy.transform.parent = _enemyContainer.transform;
     }
+
+    private void SpawnEnemy2Randomly()
+    {
+        Vector3 toSpawn = new Vector3(12, Random.Range(-4.5f, 4.5f), 0);
+        GameObject newEnemy = Instantiate(Enemy[1], toSpawn, Quaternion.identity);
+        newEnemy.transform.parent = _enemyContainer.transform;
+    }
     // Spawns more enemies the longer the game has been played.
     IEnumerator EnemySpawnRoutine()
     {
@@ -61,12 +68,12 @@ public class SpawnManager : MonoBehaviour {
             else if (_runtime >= 10 && _runtime < 20)
             {
                 SpawnEnemyRandomly();
-                SpawnEnemyRandomly();
+                SpawnEnemy2Randomly();
             }
             else if (_runtime >= 20)
             {
                 SpawnEnemyRandomly();
-                SpawnEnemyRandomly();
+                SpawnEnemy2Randomly();
                 SpawnEnemyRandomly();
             }
             yield return new WaitForSeconds(4.0f);
