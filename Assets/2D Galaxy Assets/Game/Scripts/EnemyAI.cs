@@ -23,7 +23,11 @@ public class EnemyAI : MonoBehaviour {
     bool _strafing = false;
 
     bool _reverse = false;
-    
+
+    [SerializeField]
+    private GameObject _shield = null;
+    bool shielded = false;
+
     void Start() {
         Reload();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
@@ -71,6 +75,12 @@ public class EnemyAI : MonoBehaviour {
             default:
                 break;
         }
+    }
+
+    public void StartShield()
+    {
+        shielded = true;
+        _shield.SetActive(true);
     }
 
     private void Movement()
@@ -125,7 +135,15 @@ public class EnemyAI : MonoBehaviour {
 
     public void Damage()
     {
-        enHealth--;
+        if (shielded)
+        {
+            shielded = false;
+            _shield.SetActive(false);
+        }
+        else
+        {
+            enHealth--;
+        }
         if (enHealth == 0)
         {
             _uiManager.UpdateScore();

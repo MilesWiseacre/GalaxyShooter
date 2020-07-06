@@ -24,6 +24,10 @@ public class Enemy_02 : MonoBehaviour
     bool _reverse = false;
     bool _forReverse = false;
 
+    [SerializeField]
+    private GameObject _shield = null;
+    bool shielded = false;
+
     void Start()
     {
         Reload();
@@ -47,6 +51,12 @@ public class Enemy_02 : MonoBehaviour
     {
         Movement();
         Shoot();
+    }
+
+    public void StartShield()
+    {
+        shielded = true;
+        _shield.SetActive(true);
     }
 
     IEnumerator Toggle()
@@ -142,7 +152,14 @@ public class Enemy_02 : MonoBehaviour
 
     public void Damage()
     {
-        enHealth--;
+        if (shielded)
+        {
+            shielded = false;
+            _shield.SetActive(false);
+        } else
+        {
+            enHealth--;
+        }
         if (enHealth == 0)
         {
             _uiManager.UpdateScore();

@@ -47,6 +47,11 @@ public class SpawnManager : MonoBehaviour {
     {
         Vector3 toSpawn = new Vector3(12, Random.Range(-4.5f, 4.5f), 0);
         GameObject newEnemy = Instantiate(Enemy[0], toSpawn, Quaternion.identity);
+        float decision = Random.Range(0, 5);
+        if (decision == 0)
+        {
+            newEnemy.GetComponent<EnemyAI>().StartShield();
+        }
         newEnemy.transform.parent = _enemyContainer.transform;
     }
 
@@ -54,6 +59,11 @@ public class SpawnManager : MonoBehaviour {
     {
         Vector3 toSpawn = new Vector3(12, Random.Range(-4.5f, 4.5f), 0);
         GameObject newEnemy = Instantiate(Enemy[1], toSpawn, Quaternion.identity);
+        float decision = Random.Range(0, 3);
+        if (decision == 0)
+        {
+            newEnemy.GetComponent<Enemy_02>().StartShield();
+        }
         newEnemy.transform.parent = _enemyContainer.transform;
     }
     // Spawns more enemies the longer the game has been played.
