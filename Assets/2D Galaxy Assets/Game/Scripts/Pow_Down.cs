@@ -34,7 +34,6 @@ public class Pow_Down : MonoBehaviour
             Player player = other.GetComponent<Player>();
             player.PowDown();
             AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, .2f);
-            player.coolDown = Time.time + 5.0f;
             Destroy(this.gameObject);
         }
     }

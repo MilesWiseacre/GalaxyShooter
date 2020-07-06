@@ -53,7 +53,7 @@ public class Player : MonoBehaviour {
 
     CameraShake _camShake;
 
-    bool _powDown = false;
+    public bool _powDown = false;
 
     int _reserveAmmo = 0;
 
@@ -196,16 +196,21 @@ public class Player : MonoBehaviour {
         _uiManager.SetBar(time);
     }
 
+    public void RemoveDebuff()
+    {
+        _powDown = false;
+        _ammo = _reserveAmmo;
+        _uiManager.UpdateAmmo(_ammo, _maxAmmo);
+        _uiManager.UpdateThrusters("Disengaged");
+    }
+
     private void CoolDown()
     {
         if (Time.time > coolDown)
         {
             if (_powDown)
             {
-                _powDown = false;
-                _ammo = _reserveAmmo;
-                _uiManager.UpdateAmmo(_ammo, _maxAmmo);
-                _uiManager.UpdateThrusters("Disengaged");
+                RemoveDebuff();
             }
             TripleShot = false;
             speedMult = 1;

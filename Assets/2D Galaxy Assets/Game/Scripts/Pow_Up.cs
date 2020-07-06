@@ -22,11 +22,15 @@ public class Pow_Up : MonoBehaviour
     {
         _anim = GetComponent<Animator>();
         _sprRender = GetComponent<SpriteRenderer>();
-        _powID = Random.Range(0, 10);
+        _powID = Random.Range(0, 11);
         int idAdjust = _powID;
-        if (idAdjust >= 5)
+        if (idAdjust >= 5 && idAdjust != 11)
         {
             idAdjust = idAdjust - 5;
+        }
+        else if (idAdjust == 11)
+        {
+            idAdjust = idAdjust - 8;
         }
         _sprRender.sprite = _sprPow[idAdjust];
         _anim.SetInteger("Pow_ID", idAdjust);
@@ -48,6 +52,10 @@ public class Pow_Up : MonoBehaviour
         if (other.tag == "Player")
         {
             Player player = other.GetComponent<Player>();
+            if (player._powDown)
+            {
+                player.RemoveDebuff();
+            }
             switch (_powID)
             {
                 case 0:
@@ -69,17 +77,18 @@ public class Pow_Up : MonoBehaviour
 
                 case 3:
                 case 8:
+                case 11:
                     player.Reload();
                     break;
 
                 case 4:
                 case 9:
-                    player.Heal();
+                    player.Seek();
+                    player.SetCoolDown(5);
                     break;
 
                 case 10:
-                    player.Seek();
-                    player.SetCoolDown(5);
+                    player.Heal();
                     break;
 
                 default:
@@ -87,7 +96,6 @@ public class Pow_Up : MonoBehaviour
                     break;
             }
             AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, .2f);
-            player.coolDown = Time.time + 5.0f;
             Destroy(this.gameObject);
         }
     }

@@ -41,6 +41,7 @@ public class UIManager : MonoBehaviour {
 
     public void SetBar(float time)
     {
+        powBar.maxValue = time;
         powBar.value = time;
         _barTime = time + Time.time;
     }

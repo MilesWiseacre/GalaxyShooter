@@ -84,8 +84,8 @@ public class SpawnManager : MonoBehaviour {
     {
         while (_gameManager.gameOver == false)
         {
-            float decision = Random.Range(0,2);
-            if (decision == 2)
+            float decision = Random.Range(0,3);
+            if (decision == 1)
             {
                 Vector3 toBe = new Vector3(12, Random.Range(-4.5f, 4.5f), 0);
                 Instantiate(PowerDown, toBe, Quaternion.identity);
