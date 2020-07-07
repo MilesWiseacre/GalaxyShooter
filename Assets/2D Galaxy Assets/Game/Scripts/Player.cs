@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 
     private float _canFire = 0.0f;
     [SerializeField]
-    private GameObject _Pla_Laser = null;
+    private GameObject _Laser = null;
     [SerializeField]
     private GameObject _Pla_3Laser = null;
 
@@ -47,9 +47,6 @@ public class Player : MonoBehaviour {
     private ParticleSystem _ps;
 
     private bool _seek = false;
-
-    [SerializeField]
-    private GameObject seekLaser = null;
 
     CameraShake _camShake;
 
@@ -224,18 +221,23 @@ public class Player : MonoBehaviour {
         _audioSource.Play();
         _ammo--;
         _uiManager.UpdateAmmo(_ammo, _maxAmmo);
-        if (_seek)
+
+        if (TripleShot == true)
         {
-            Instantiate(seekLaser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+            GameObject tri = Instantiate(_Pla_3Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+            Laser[] triple = tri.GetComponentsInChildren<Laser>();
+            foreach (Laser beam in triple)
+            {
+                beam.PlayerFire();
+            }
         } else
         {
-            if (TripleShot == true)
+            GameObject proj = Instantiate(_Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+            Laser beam = proj.GetComponent<Laser>();
+            beam.PlayerFire();
+            if (_seek)
             {
-                Instantiate(_Pla_3Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
-            }
-            else
-            {
-                Instantiate(_Pla_Laser, transform.position + new Vector3(1, 0, 0), Quaternion.identity);
+                beam.Seeking();
             }
         }
     }

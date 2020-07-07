@@ -5,7 +5,7 @@ using UnityEngine;
 public class SpawnManager : MonoBehaviour {
 
     [SerializeField]
-    private GameObject[] Enemy = null;
+    private GameObject Enemy = null;
     [SerializeField]
     private GameObject PowerUp = null;
     [SerializeField]
@@ -43,29 +43,20 @@ public class SpawnManager : MonoBehaviour {
         StartCoroutine(PowerUpRoutine());
     }
 
-    private void SpawnEnemyRandomly()
+    private void SpawnEnemyRandomly(int id)
     {
         Vector3 toSpawn = new Vector3(12, Random.Range(-4.5f, 4.5f), 0);
-        GameObject newEnemy = Instantiate(Enemy[0], toSpawn, Quaternion.identity);
+        GameObject newEnemy = Instantiate(Enemy, toSpawn, Quaternion.identity);
+        Enemy enemy = newEnemy.GetComponent<Enemy>();
+        enemy.SetType(id);
         float decision = Random.Range(0, 5);
         if (decision == 0)
         {
-            newEnemy.GetComponent<EnemyAI>().StartShield();
+            enemy.StartShield();
         }
         newEnemy.transform.parent = _enemyContainer.transform;
     }
 
-    private void SpawnEnemy2Randomly()
-    {
-        Vector3 toSpawn = new Vector3(12, Random.Range(-4.5f, 4.5f), 0);
-        GameObject newEnemy = Instantiate(Enemy[1], toSpawn, Quaternion.identity);
-        float decision = Random.Range(0, 3);
-        if (decision == 0)
-        {
-            newEnemy.GetComponent<Enemy_02>().StartShield();
-        }
-        newEnemy.transform.parent = _enemyContainer.transform;
-    }
     // Spawns more enemies the longer the game has been played.
     IEnumerator EnemySpawnRoutine()
     {
@@ -73,18 +64,18 @@ public class SpawnManager : MonoBehaviour {
         {
             if (_runtime < 10)
             {
-                SpawnEnemyRandomly();
+                SpawnEnemyRandomly(0);
             }
             else if (_runtime >= 10 && _runtime < 20)
             {
-                SpawnEnemyRandomly();
-                SpawnEnemy2Randomly();
+                SpawnEnemyRandomly(0);
+                SpawnEnemyRandomly(1);
             }
             else if (_runtime >= 20)
             {
-                SpawnEnemyRandomly();
-                SpawnEnemy2Randomly();
-                SpawnEnemyRandomly();
+                SpawnEnemyRandomly(0);
+                SpawnEnemyRandomly(0);
+                SpawnEnemyRandomly(1);
             }
             yield return new WaitForSeconds(4.0f);
         }
