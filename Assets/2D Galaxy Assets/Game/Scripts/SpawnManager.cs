@@ -77,6 +77,10 @@ public class SpawnManager : MonoBehaviour {
                 SpawnEnemyRandomly(0);
                 SpawnEnemyRandomly(1);
             }
+            if (_runtime >= 15)
+            {
+                SpawnEnemyRandomly(2);
+            }
             yield return new WaitForSeconds(4.0f);
         }
     }

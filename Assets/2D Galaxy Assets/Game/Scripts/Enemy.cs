@@ -51,6 +51,9 @@ public class Enemy : MonoBehaviour
 
     private GameObject _player = null;
 
+    // For Enemy Type 2, denotes whether it has fired at the player from behind.
+    private bool _rearRun = false;
+
     void Awake()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
@@ -70,7 +73,7 @@ public class Enemy : MonoBehaviour
         {
             AllDecide();
             StartCoroutine(DecideMovement());
-        } else if (enemyType == 1)
+        } else if (enemyType == 1 || enemyType == 2)
         {
             ReverseStrafe();
             StartCoroutine(ToggleStrafe());
@@ -168,71 +171,84 @@ public class Enemy : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _speed * Time.deltaTime);
             }
         }
-            // Enemy type 1 switches reverse bool when out of bounds.
-            if (enemyType == 1 && transform.position.x > 9)
-            {
-                transform.position = new Vector3(9, transform.position.y, 0);
-                _revThrust = !_revThrust;
-            }
-            else if (enemyType == 1 && transform.position.x < 0)
-            {
-                transform.position = new Vector3(0, transform.position.y, 0);
-                _revThrust = !_revThrust;
-            }
+        // Enemy type 1 backs away from the halfway point on the screen.
+        if (enemyType == 1 && transform.position.x > 9)
+        {
+            transform.position = new Vector3(9, transform.position.y, 0);
+            _revThrust = !_revThrust;
+        }
+        else if (enemyType == 1 && transform.position.x < 0)
+        {
+            transform.position = new Vector3(0, transform.position.y, 0);
+            _revThrust = !_revThrust;
+        }
 
-            // If game is over, leave when wrapping around.
-            if (transform.position.y <= -4.5f && _gameManager.gameOver)
-            {
-                Destroy(gameObject);
-            }
-            else if (transform.position.y >= 4.5f && _gameManager.gameOver)
-            {
-                Destroy(gameObject);
-            }
-            else if (transform.position.x <= -10 && _gameManager.gameOver)
-            {
-                Destroy(gameObject);
-            }
+        // If game is over, leave when wrapping around.
+        if (transform.position.y <= -4.5f && _gameManager.gameOver)
+        {
+            Destroy(gameObject);
+        }
+        else if (transform.position.y >= 4.5f && _gameManager.gameOver)
+        {
+            Destroy(gameObject);
+        }
+        else if (transform.position.x <= -10 && _gameManager.gameOver)
+        {
+            Destroy(gameObject);
+        }
 
-            // Wraps around when out of bounds.
-            if (transform.position.y > 4.5f)
+        // Wraps around when out of bounds.
+        if (transform.position.y > 4.5f)
+        {
+            transform.position = new Vector3(transform.position.x, -4.5f, 0);
+        }
+        else if (transform.position.y < -4.5f)
+        {
+            transform.position = new Vector3(transform.position.x, 4.5f, 0);
+        }
+        if (transform.position.x <= -10)
+        {
+            transform.position = new Vector3(10, Random.Range(-4.5f, 4.5f), 0);
+            if (_rearRun == true)
             {
-                transform.position = new Vector3(transform.position.x, -4.5f, 0);
+                _rearRun = false;
             }
-            else if (transform.position.y < -4.5f)
-            {
-                transform.position = new Vector3(transform.position.x, 4.5f, 0);
-            }
-            if (transform.position.x <= -10)
-            {
-                transform.position = new Vector3(10, Random.Range(-4.5f, 4.5f), 0);
-            }
+        }
 
-            // Forward movement determined by a bool.
-            float thrustdir = 0;
-            if (!_revThrust)
-            {
-                thrustdir = -1;
-            }
-            else if (_revThrust)
-            {
-                thrustdir = 1;
-            }
+        // Forward movement determined by a bool.
+        float thrustdir = 0;
+        if (!_revThrust)
+        {
+            thrustdir = -1;
+        }
+        else if (_revThrust)
+        {
+            thrustdir = 1;
+        }
+        
+        // Enemy type 2 will stop advancing on the left side of the screen to fire at the player from behind
+        if (enemyType == 2 && transform.position.x < -8 && _rearRun == false)
+        {
+            thrustdir = 0;
+        } else
+        {
+            
+        }
 
-            // Strafing movement determined by a bool.
-            float strafedir = 0;
-            if (!_revStrafe)
-            {
-                strafedir = .5f;
-            }
-            else if (_revStrafe)
-            {
-                strafedir = -.5f;
-            }
+        // Strafing movement determined by a bool.
+        float strafedir = 0;
+        if (!_revStrafe)
+        {
+            strafedir = .5f;
+        }
+        else if (_revStrafe)
+        {
+            strafedir = -.5f;
+        }
 
-            // Move the enemy along.
-            Vector3 moveDir = new Vector3(thrustdir, strafedir, 0);
-            transform.Translate(moveDir * _speed * Time.deltaTime);
+        // Move the enemy along.
+        Vector3 moveDir = new Vector3(thrustdir, strafedir, 0);
+        transform.Translate(moveDir * _speed * Time.deltaTime);
     }
 
     public void StartShield()
@@ -250,7 +266,12 @@ public class Enemy : MonoBehaviour
             if (enemyType == 1)
             {
                 proj.GetComponent<Laser>().Strafing();
-            } else if (enemyType == 2)
+            }else if (enemyType == 2 && transform.position.x < -8)
+            {
+                proj.GetComponent<Laser>().Behind();
+                _rearRun = true;
+            }
+            else if (enemyType == 3)
             {
                 proj.GetComponent<Laser>().Seeking();
             }

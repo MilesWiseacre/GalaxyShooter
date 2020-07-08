@@ -20,6 +20,8 @@ public class Laser : MonoBehaviour {
 
     private bool _seeking = false;
 
+    private bool _behind = false;
+
     private GameObject[] _targets = null;
 
     private GameObject _target = null;
@@ -65,6 +67,11 @@ public class Laser : MonoBehaviour {
         _strafer = true;
     }
 
+    public void Behind()
+    {
+        _behind = true;
+    }
+
     void Target()
     {
         if (playLaser)
@@ -98,6 +105,10 @@ public class Laser : MonoBehaviour {
             else
             {
                 xdir = -1f;
+            }
+            if (_behind)
+            {
+                xdir = xdir * -1f;
             }
             if (_strafer)
             {
