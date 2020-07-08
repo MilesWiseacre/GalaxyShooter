@@ -17,20 +17,26 @@ public class Pow_Up : MonoBehaviour
 
     private Animator _anim = null;
 
-    // Use this for initialization
-    void Start()
+    private GameObject _player = null;
+
+    void Awake()
     {
         _anim = GetComponent<Animator>();
         _sprRender = GetComponent<SpriteRenderer>();
-        _powID = Random.Range(0, 11);
+        _player = GameObject.FindWithTag("Player");
+    }
+
+    void Start()
+    {
+        _powID = Random.Range(0, 10);
         int idAdjust = _powID;
-        if (idAdjust >= 5 && idAdjust != 11)
+        if (idAdjust >= 6 && idAdjust != 10)
         {
-            idAdjust = idAdjust - 5;
+            idAdjust = idAdjust - 6;
         }
-        else if (idAdjust == 11)
+        else if (idAdjust == 10)
         {
-            idAdjust = idAdjust - 8;
+            idAdjust = idAdjust - 7;
         }
         _sprRender.sprite = _sprPow[idAdjust];
         _anim.SetInteger("Pow_ID", idAdjust);
@@ -40,11 +46,20 @@ public class Pow_Up : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.C))
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, (_speed + 2) * Time.deltaTime);
+        }
         transform.Translate(Vector3.left * _speed * Time.deltaTime);
         if (transform.position.x <= -10)
         {
             Destroy(this.gameObject);
         }
+    }
+
+    private void Draw()
+    {
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -67,35 +82,34 @@ public class Pow_Up : MonoBehaviour
             switch (_powID)
             {
                 case 0:
-                case 5:
+                case 6:
                     player.TripleShot = true;
                     player.SetCoolDown(5);
                     break;
 
                 case 1:
-                case 6:
+                case 7:
                     player.speedMult = 1.5f;
                     player.SetCoolDown(5);
                     break;
 
                 case 2:
-                case 7:
+                case 8:
                     player.Shield();
                     break;
 
                 case 3:
-                case 8:
-                case 11:
+                case 9:
+                case 10:
                     player.Reload();
                     break;
 
                 case 4:
-                case 9:
                     player.Seek();
                     player.SetCoolDown(5);
                     break;
 
-                case 10:
+                case 5:
                     player.Heal();
                     break;
 
