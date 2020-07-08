@@ -49,6 +49,14 @@ public class Pow_Up : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (other.tag == "Laser")
+        {
+            if (other.GetComponent<Laser>().playLaser == false)
+            {
+                Destroy(other);
+                Destroy(gameObject);
+            }
+        }
         if (other.tag == "Player")
         {
             Player player = other.GetComponent<Player>();

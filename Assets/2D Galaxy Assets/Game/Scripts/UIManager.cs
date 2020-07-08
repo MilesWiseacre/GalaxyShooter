@@ -48,7 +48,6 @@ public class UIManager : MonoBehaviour {
 
     public void UpdateLives(int hasLives)
     { 
-        Debug.Log("Player lives: " + hasLives);
         LivesSpr.sprite = LivesImg[hasLives];
     }
 

@@ -54,6 +54,9 @@ public class Enemy : MonoBehaviour
     // For Enemy Type 2, denotes whether it has fired at the player from behind.
     private bool _rearRun = false;
 
+    // For stopping movement to shoot at a powerup.
+    private bool _aimed = false;
+
     void Awake()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
@@ -161,8 +164,24 @@ public class Enemy : MonoBehaviour
         Shoot();
     }
 
+    private void Aim()
+    {
+        if (!_aimed)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, Vector3.left, out hit))
+            {
+                if (hit.transform.GetComponent<Pow_Up>() != null)
+                {
+                    _aimed = true;
+                }
+            }
+        }
+    }
+
     private void Movement()
     {
+        // Ram the player if they get too close.
         if (_player != null)
         {
             float dist = Vector3.Distance(_player.transform.position, transform.position);
@@ -171,6 +190,7 @@ public class Enemy : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, _player.transform.position, _speed * Time.deltaTime);
             }
         }
+
         // Enemy type 1 backs away from the halfway point on the screen.
         if (enemyType == 1 && transform.position.x > 9)
         {
@@ -235,15 +255,21 @@ public class Enemy : MonoBehaviour
             
         }
 
-        // Strafing movement determined by a bool.
+        // Strafing movement determined by a bool. Strafing disabled while "aimed"
         float strafedir = 0;
-        if (!_revStrafe)
+        if (!_aimed)
         {
-            strafedir = .5f;
-        }
-        else if (_revStrafe)
+            if (!_revStrafe)
+            {
+                strafedir = .5f;
+            }
+            else if (_revStrafe)
+            {
+                strafedir = -.5f;
+            }
+        } else if (_aimed)
         {
-            strafedir = -.5f;
+            strafedir = 0f;
         }
 
         // Move the enemy along.
@@ -274,6 +300,10 @@ public class Enemy : MonoBehaviour
             else if (enemyType == 3)
             {
                 proj.GetComponent<Laser>().Seeking();
+            }
+            if (_aimed)
+            {
+                _aimed = false;
             }
         }
     }
