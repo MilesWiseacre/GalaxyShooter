@@ -74,8 +74,8 @@ public class SpawnManager : MonoBehaviour {
             else if (_runtime >= 20)
             {
                 SpawnEnemyRandomly(0);
-                SpawnEnemyRandomly(0);
                 SpawnEnemyRandomly(1);
+                SpawnEnemyRandomly(3);
             }
             if (_runtime >= 15)
             {

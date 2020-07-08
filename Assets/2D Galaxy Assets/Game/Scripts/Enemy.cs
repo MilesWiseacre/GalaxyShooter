@@ -72,7 +72,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         Reload();
-        if (enemyType == 0)
+        if (enemyType == 0 || enemyType == 3)
         {
             AllDecide();
             StartCoroutine(DecideMovement());
@@ -162,6 +162,7 @@ public class Enemy : MonoBehaviour
     {
         Movement();
         Shoot();
+        Aim();
     }
 
     private void Aim()
@@ -174,6 +175,17 @@ public class Enemy : MonoBehaviour
                 if (hit.transform.GetComponent<Pow_Up>() != null)
                 {
                     _aimed = true;
+                }
+                if (enemyType == 3 && hit.transform.GetComponent<Laser>() != null)
+                {
+                    if (hit.transform.GetComponent<Laser>().playLaser = true)
+                    {
+                        if (!_strafing)
+                        {
+                            _strafing = true;
+                        }
+                        _revStrafe = !_revStrafe;
+                    }
                 }
             }
         }
@@ -297,7 +309,7 @@ public class Enemy : MonoBehaviour
                 proj.GetComponent<Laser>().Behind();
                 _rearRun = true;
             }
-            else if (enemyType == 3)
+            else if (enemyType == 4)
             {
                 proj.GetComponent<Laser>().Seeking();
             }
